@@ -75,6 +75,7 @@ interface Chapter {
   updated: Date;
   content: string;
   day: string;
+  tags: string,
   frontMatter: FrontMatter;
 }
 interface OutputOptions {
@@ -141,10 +142,10 @@ async function main() {
   let serveDistDir = "";
   let dayBooks: Record<string, string[]> = {};
   if (flags.today) {
-    const today = formatBeijing(now, "yyyy-MM-dd");
+    const today = formatTime(now, "yyyy-MM-dd");
     dayBooks[`${today}`] = [today];
   } else if (flags.yesterday) {
-    const yesterday = formatBeijing(
+    const yesterday = formatTime(
       new Date(now.getTime() - DAY),
       "yyyy-MM-dd",
     );
@@ -353,9 +354,9 @@ async function main() {
           updated: attrs.updated
             ? new Date(attrs.updated)
             : new Date(attrs.date),
-          category,
+          tags,
           content: body,
-          day: formatBeijing(new Date(attrs.date), "yyyy-MM-dd"),
+          day: formatTime(new Date(attrs.date), "yyyy-MM-dd"),
           frontMatter: attrs,
         };
         // add to archive
@@ -405,6 +406,10 @@ async function main() {
             markdownContent += `原文标题：**${extra.original_title}**\n\n`;
           }
         }
+      }
+
+      if (chapter.tags.length > 0) {
+        markdownContent += `\n\nTags: ***${chapter.tags.join(', ')}***\n\n`;
       }
 
       markdownContent += chapter.content;
@@ -522,7 +527,7 @@ async function main() {
     // for archive book gropu by year and month
     if (key === "archive") {
       const groups = groupBy(chapters, (chapter: Chapter) => {
-        return formatBeijing(chapter.date, "yyyyMMdd");
+        return formatTime(chapter.date, "yyyyMMdd");
       });
       const days = Object.keys(groups).sort((a, b) => {
         return parseInt(b) - parseInt(a);
@@ -884,15 +889,13 @@ function addZero(num: number): string {
     return "" + num;
   }
 }
-function formatBeijing(date: Date, formatString: string) {
+function formatTime(date: Date, formatString: string) {
   date = new Date(date.getTime() + 8 * 60 * 60 * 1000);
   const formatter = new DateTimeFormatter(formatString);
-  return formatter.format(date, {
-    timeZone: "UTC",
-  });
+  return formatter.format(date);
 }
 export function getWeekOfYear(date: Date): WeekOfYear {
-  const beijingDate = formatBeijing(date, "yyyy-MM-dd");
+  const beijingDate = formatTime(date, "yyyy-MM-dd");
   const beijingDateArr = beijingDate.split("-");
   const workingDate = new Date(
     Date.UTC(
