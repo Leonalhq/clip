@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "OZEMPIC"
 date: 2023-09-10T22:38:57
 updated: 2023-09-10T22:38:57
 taxonomies:
