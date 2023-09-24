@@ -8,7 +8,7 @@ extra:
   source: https://archiveofourown.org/works/20097493?view_full_work=true
   hostname: archiveofourown.org
   author: Organization for Transformative Works
-  original_title: "Inverse Omens - Fyre - Good Omens
+  original_title: "Inverse Omens - Fyre - Good Omens"
 ---
 
 ### Chapter Text
